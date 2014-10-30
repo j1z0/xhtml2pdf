@@ -42,7 +42,7 @@ except:
     except:
         PILImage = None
 
-from six import reraise, StringIO, string_types
+from six import reraise, BytesIO, string_types
 
 log = logging.getLogger("xhtml2pdf")
 
@@ -225,7 +225,7 @@ class PmlPageTemplate(PageTemplate):
                 if self.pisaBackground.mimetype.startswith("image/"):
 
                     try:
-                        img = PmlImageReader(StringIO(self.pisaBackground.getData()))
+                        img = PmlImageReader(BytesIO(self.pisaBackground.getData()))
                         iw, ih = img.getSize()
                         pw, ph = canvas._pagesize
 
@@ -317,7 +317,7 @@ class PmlImageReader(object):  # TODO We need a factory here, returning either a
         else:
             try:
                 self.fp = open_for_read(fileName, 'b')
-                if isinstance(self.fp, StringIO().__class__):
+                if isinstance(self.fp, BytesIO().__class__):
                     imageReaderFlags = 0  # avoid messing with already internal files
                 if imageReaderFlags > 0:  # interning
                     data = self.fp.read()
@@ -499,7 +499,7 @@ class PmlImage(Flowable, PmlMaxHeightMixIn):
         return self.dWidth, self.dHeight
 
     def getImage(self):
-        img = PmlImageReader(StringIO(self._imgdata))
+        img = PmlImageReader(BytesIO(self._imgdata))
         return img
 
     def draw(self):

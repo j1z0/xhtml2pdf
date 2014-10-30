@@ -251,10 +251,18 @@ class CSSParseError(Exception):
         if inline:
             self.inline = inline
         if self.fullsrc:
-            self.srcFullIdx = self.fullsrc.find(self.src)
+            try:
+                self.srcFullIdx = self.fullsrc.find(self.src)
+            except:
+                self.srcFullIdx = self.fullsrc.find(self.src.encode())
+
             if self.srcFullIdx < 0:
                 del self.srcFullIdx
-            self.ctxsrcFullIdx = self.fullsrc.find(self.ctxsrc)
+            try:
+                self.ctxsrcFullIdx = self.fullsrc.find(self.ctxsrc)
+            except:
+                self.ctxsrcFullIdx = self.fullsrc.find(self.ctxsrc.encode())
+
             if self.ctxsrcFullIdx < 0:
                 del self.ctxsrcFullIdx
 
@@ -512,7 +520,10 @@ class CSSParser(object):
         ;
         """
         # Get rid of the comments
-        src = self.re_comment.sub('', src)
+        try:
+            src = self.re_comment.sub('', src)
+        except:
+            src = self.re_comment.sub('', src.decode())
 
         # [ CHARSET_SYM S* STRING S* ';' ]?
         src = self._parseAtCharset(src)
